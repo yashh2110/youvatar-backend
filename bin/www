@@ -1,0 +1,23 @@
+const http = require("http");
+const app = require("../app");
+const { port } = require("../config/config");
+const { default: mysqlConn } = require("../config/mysql.config");
+const { default: redisConn } = require("../config/redis.config");
+
+const httpServer = http.createServer(app);
+
+httpServer.listen(port, async () => {
+  console.log("server listening on port " + port);
+
+  // mysql initialization;
+  mysqlConn.getConnection((err, conn) => {
+    if (err) throw err;
+    console.log("mysql connected successfully!");
+    conn.release();
+  });
+
+  // redis initialization;
+  redisConn.on("error", (err) => console.log("redis server error: " + err));
+  await redisConn.connect();
+  console.log("redis connected successfully!");
+});
