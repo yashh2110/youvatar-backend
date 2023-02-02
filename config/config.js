@@ -24,6 +24,7 @@ if (process.env.NODE_ENV === "development") {
 
   redis_url = process.env.REDIS_DEV_HOSTNAME;
   redis_password = process.env.REDIS_DEV_PASSWORD;
+  5;
   redis_port = process.env.REDIS_DEV_PORT;
 
   port = process.env.DEV_PORT;
