@@ -16,4 +16,4 @@ const mysqlConn = mysql.createPool({
   queueLimit: 0,
 });
 
-exports.default = mysqlConn;
+module.exports = mysqlConn;
