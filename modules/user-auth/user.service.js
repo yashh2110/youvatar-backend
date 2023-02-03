@@ -10,15 +10,21 @@ const {
   setOtpByPhoneQuery,
   verifyOtpByEmailQuery,
   verifyOtpByPhoneQuery,
+  createUserSessionQuery,
+  setUserDetailsQuery,
 } = require("./user.dal");
 
 module.exports.createAccountService = async (req, res, next) => {
   const { email, phone } = req.body;
   try {
     if (email) {
-      await createAccountByEmailQuery({ email });
+      const data = await createAccountByEmailQuery({ email });
+      console.log(data);
+      if (data?.res === "existing") return next();
     } else if (phone) {
-      await createAccountByPhoneQuery({ phone });
+      const data = await createAccountByPhoneQuery({ phone });
+      console.log(data);
+      if (data?.res === "existing") return next();
     } else {
       return res.status(400).json({ error: "Check the request body" });
     }
@@ -68,6 +74,8 @@ module.exports.verifyOtpService = async (req, res, next) => {
       return res.status(400).json({ error: "Check the request body" });
     }
     console.log(data);
+    if (data?.length === 0)
+      return res.status(404).json({ error: "User is not registered" });
     if (otp === data[0].otp) {
       const time = getTimeInMills();
       if (time < data[0].expired_at) return next();
@@ -75,16 +83,42 @@ module.exports.verifyOtpService = async (req, res, next) => {
     }
     return next();
   } catch (err) {
-    console.log(err);
+    return res
+      .status(400)
+      .json({ error: err.sqlMessage || "Something went wrong" });
   }
 };
 
 // verifying the otp ;
 
-// module.exports.createUserSessionService = async(req,res,next)=>{
-//   const session_token  = getUuid();
-//   const time = getTimeInMills();
-//   const expired_at = time + getYearsInMills(1);
-//   console.log(getYearsInMills(),expired_at);
+module.exports.createUserSessionService = async (req, res, next) => {
+  const { phone, email } = req.body;
+  const session_token = getUuid();
+  const source = phone || email;
+  try {
+    await createUserSessionQuery({ session_token, source });
+    return res
+      .status(200)
+      .json({ msg: `Verification is a success`, token: session_token });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(400)
+      .json({ error: err.sqlMessage || "Something went wrong" });
+  }
+};
 
-// }
+module.exports.completeUserProfileService = async (req, res) => {
+  // console.log(req.query.user_id);
+  const user_id = req.query.user_id;
+  const user_data = req.body;
+  try {
+    await setUserDetailsQuery({ user_id, user_data });
+    return res.status(200).json({ msg: "Account created successfully" });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(400)
+      .json({ error: err.sqlMessage || "Something went wrong" });
+  }
+};

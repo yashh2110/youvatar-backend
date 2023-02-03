@@ -1,25 +1,44 @@
 const mysqlConn = require("../../config/mysql.config");
-const { getTimeInMills } = require("../../helpers/get-current-time");
+const {
+  getTimeInMills,
+  getYearsInMills,
+} = require("../../helpers/get-current-time");
+const { getUuid } = require("../../helpers/get-uuid");
 
 const mysql = mysqlConn.promise();
 
 module.exports.createAccountByEmailQuery = async ({ email }) => {
-  const res = await mysql.execute("insert into users (user_email) values (?)", [
-    email,
-  ]);
+  const [rows, fields] = await mysql.execute(
+    "select count(*) as count from users where user_email = ? and user_auth= ?",
+    [email, 0]
+  );
+  if (rows[0].count > 0) return { res: "existing" };
+  const current_time = getTimeInMills();
+  const res = await mysql.execute(
+    "insert into users (user_email,created_at) values (?,?)",
+    [email, current_time]
+  );
   return res;
 };
 
 module.exports.createAccountByPhoneQuery = async ({ phone }) => {
-  const res = await mysql.execute("insert into users (user_phone) values (?)", [
-    phone,
-  ]);
+  const [rows, fields] = await mysql.execute(
+    "select count(*) as count from users where user_phone = ? and user_auth= ?",
+    [phone, 0]
+  );
+  if (rows[0].count > 0) return { res: "existing" };
+  const current_time = getTimeInMills();
+  const res = await mysql.execute(
+    "insert into users (user_phone,created_at) values (?,?)",
+    [phone, current_time]
+  );
   return res;
 };
 
 module.exports.setOtpByEmailQuery = async ({ otp, email }) => {
   const timeInMills = getTimeInMills();
   const expiryTime = timeInMills + 5 * 60000;
+
   const res = await mysql.execute(
     "insert into user_otps (otp,email,created_at,expired_at) values (?,?,?,?)",
     [otp, email, timeInMills, expiryTime]
@@ -37,19 +56,47 @@ module.exports.setOtpByPhoneQuery = async ({ otp, phone }) => {
   return res;
 };
 
+// verify otp
+
 module.exports.verifyOtpByEmailQuery = async ({ email }) => {
   const [rows, fields] = await mysql.execute(
-    `select otp,expired_at from user_otps where email="${email} order by created_at desc limit 1`
+    `select otp,expired_at from user_otps where email="${email}" order by created_at desc limit 1`
   );
   console.log(rows);
   return rows;
 };
 module.exports.verifyOtpByPhoneQuery = async ({ phone }) => {
   const [rows, fields] = await mysql.execute(
-    `select otp,expired_at from user_otps where phone="${phone} order by created_at desc limit 1`
+    `select otp,expired_at from user_otps where phone="${phone}" order by created_at desc limit 1`
   );
   console.log(rows);
   return rows;
 };
 
-// module.exports = async({ session_token });
+module.exports.createUserSessionQuery = async ({ session_token, source }) => {
+  console.log(source);
+  const [rows, fields] = await mysql.execute(
+    `select user_id from users where user_email=? or user_phone=?`,
+    [source, source]
+  );
+  console.log(rows);
+  const user_id = rows[0].user_id;
+  const time = getTimeInMills();
+  const expired_at = time + getYearsInMills(1);
+  console.log(getYearsInMills(1), expired_at);
+  const [data, _] = await mysql.execute(
+    `insert into user_sessions (session_token,user_id,created_at,expired_at) values (?,?,?,?)`,
+    [session_token, user_id, time, expired_at]
+  );
+  return data;
+};
+
+module.exports.setUserDetailsQuery = async ({ user_data, user_id }) => {
+  const { username, name, password, dob, mentor } = user_data;
+  console.log(username, name, password, dob, mentor, user_id);
+  const [data, _] = await mysql.execute(
+    `update users set user_name=?, user_nickname=?,user_password=?, user_dob=?, user_is_mentor=?,user_is_active=? where user_id=?`,
+    [username, name, password, dob, mentor, 1, user_id]
+  );
+  return data;
+};
