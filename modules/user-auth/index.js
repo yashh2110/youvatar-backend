@@ -4,6 +4,7 @@ const {
   verifyOtpService,
   createUserSessionService,
   completeUserProfileService,
+  loginService,
 } = require("./user.service");
 
 const user = {
@@ -12,6 +13,7 @@ const user = {
   verifyOtp: verifyOtpService,
   createSession: createUserSessionService,
   completeProfile: completeUserProfileService,
+  login: loginService,
 };
 
 module.exports = user;

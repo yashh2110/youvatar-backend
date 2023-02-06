@@ -73,11 +73,11 @@ module.exports.verifyOtpByPhoneQuery = async ({ phone }) => {
   return rows;
 };
 
-module.exports.createUserSessionQuery = async ({ session_token, source }) => {
-  console.log(source);
+module.exports.createUserSessionQuery = async ({ session_token, src }) => {
+  console.log(src);
   const [rows, fields] = await mysql.execute(
     `select user_id from users where user_email=? or user_phone=?`,
-    [source, source]
+    [src, src]
   );
   console.log(rows);
   const user_id = rows[0].user_id;
@@ -95,8 +95,19 @@ module.exports.setUserDetailsQuery = async ({ user_data, user_id }) => {
   const { username, name, password, dob, mentor } = user_data;
   console.log(username, name, password, dob, mentor, user_id);
   const [data, _] = await mysql.execute(
-    `update users set user_name=?, user_nickname=?,user_password=?, user_dob=?, user_is_mentor=?,user_is_active=? where user_id=?`,
-    [username, name, password, dob, mentor, 1, user_id]
+    `update users set user_name=?, user_nickname=?,user_password=?, user_dob=?, user_is_mentor=?,user_is_active=?,user_auth=? where user_id=?`,
+    [username, name, password, dob, mentor, 1, 1, user_id]
   );
   return data;
+};
+
+// login
+module.exports.loginQuery = async ({ source, password }) => {
+  console.log(source);
+  const [rows, _] = await mysql.execute(
+    `select user_id,user_password from users where (user_phone=? or user_email=?) and user_auth=? and user_is_active=?`,
+    [source, source, 1, 1]
+  );
+  console.log(rows);
+  return rows;
 };

@@ -3,6 +3,7 @@ const {
   getYearsInMills,
 } = require("../../helpers/get-current-time");
 const { getUuid } = require("../../helpers/get-uuid");
+const userSchema = require("../../helpers/user-schema-validator");
 const {
   createAccountByEmailQuery,
   createAccountByPhoneQuery,
@@ -12,27 +13,26 @@ const {
   verifyOtpByPhoneQuery,
   createUserSessionQuery,
   setUserDetailsQuery,
+  loginQuery,
 } = require("./user.dal");
 
 module.exports.createAccountService = async (req, res, next) => {
   const { email, phone } = req.body;
   try {
     if (email) {
-      const data = await createAccountByEmailQuery({ email });
-      console.log(data);
+      const data = await createAccountByEmailQuery({ email: email });
       if (data?.res === "existing") return next();
     } else if (phone) {
       const data = await createAccountByPhoneQuery({ phone });
-      console.log(data);
       if (data?.res === "existing") return next();
     } else {
       return res.status(400).json({ error: "Check the request body" });
     }
     next();
   } catch (err) {
-    return res
-      .status(400)
-      .json({ error: err.sqlMessage || "Something went wrong" });
+    return res.status(400).json({
+      error: err.sqlMessage || err.message || "Something went wrong",
+    });
   }
 };
 
@@ -56,7 +56,7 @@ module.exports.sendOtpService = async (req, res) => {
   } catch (err) {
     return res
       .status(400)
-      .json({ error: err.sqlMessage || "Something went wrong" });
+      .json({ error: err.sqlMessage || err.message || "Something went wrong" });
   }
 };
 
@@ -92,14 +92,16 @@ module.exports.verifyOtpService = async (req, res, next) => {
 // verifying the otp ;
 
 module.exports.createUserSessionService = async (req, res, next) => {
-  const { phone, email } = req.body;
+  const { phone, email, source } = req.body;
   const session_token = getUuid();
-  const source = phone || email;
+  const src = phone || email || source;
   try {
-    await createUserSessionQuery({ session_token, source });
-    return res
-      .status(200)
-      .json({ msg: `Verification is a success`, token: session_token });
+    await createUserSessionQuery({ session_token, src });
+    res.cookie("session_token", session_token, {
+      maxAge: 900000,
+      httpOnly: true,
+    });
+    return res.status(200).json({ msg: `Verification is a success` });
   } catch (err) {
     console.log(err);
     return res
@@ -120,5 +122,24 @@ module.exports.completeUserProfileService = async (req, res) => {
     return res
       .status(400)
       .json({ error: err.sqlMessage || "Something went wrong" });
+  }
+};
+
+// login
+
+module.exports.loginService = async (req, res, next) => {
+  const { source, password } = req.body;
+  try {
+    const data = await loginQuery({ source, password });
+    if (data.length === 0)
+      return res.status(401).json({ error: "User is not registered" });
+    const user_password = data[0].user_password;
+    if (user_password !== password)
+      return res.status(401).json({ error: "Password does not match" });
+    return next();
+  } catch (err) {
+    return res
+      .status(400)
+      .json({ error: err.sqlMessage || err || "Something went wrong" });
   }
 };
