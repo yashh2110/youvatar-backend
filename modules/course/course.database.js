@@ -1,0 +1,103 @@
+const mysqlConn = require("../../config/mysql.config");
+const mysql = mysqlConn.promise();
+
+module.exports.createCourse = async ({
+  course_admin,
+  course_name,
+  course_category,
+  university,
+  description,
+  no_of_batches,
+  timings,
+  students_per_batch,
+  duration,
+  no_of_module,
+  pre_requisites,
+  access,
+  certificate,
+  total_assignments,
+  overview_video,
+  course_actual_price,
+  course_selling_price,
+  course_start_date,
+  course_end_date,
+  course_teaching_type,
+  course_active,
+  course_auth,
+  course_markup_percentage,
+  course_revenue,
+  course_priority,
+  course_poupularity,
+  created_at,
+  updated_at,
+}) => {
+  const insertQuery = `
+  INSERT INTO courses (
+  course_admin,
+  course_name,
+  course_category,
+  university,
+  description,
+  no_of_batches,
+  timings,
+  students_per_batch,
+  duration,
+  no_of_module,
+  pre_requisites,
+  access,
+  certificate,
+  total_assignments,
+  overview_video,
+  course_actual_price,
+  course_selling_price,
+  course_start_date,
+  course_end_date,
+  course_teaching_type,
+  course_active, 
+  course_auth,
+  course_markup_percentage,
+  course_revenue,
+  course_priority,
+  course_poupularity,
+  created_at,
+  updated_at,
+  )
+  VALUES (
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+  );
+`;
+
+  const values = [
+    course_admin,
+    course_name,
+    course_category,
+    university,
+    description,
+    no_of_batches,
+    timings,
+    students_per_batch,
+    duration,
+    no_of_module,
+    pre_requisites,
+    access,
+    certificate,
+    total_assignments,
+    overview_video,
+    course_actual_price,
+    course_selling_price,
+    course_start_date,
+    course_end_date,
+    course_teaching_type,
+    course_active,
+    course_auth,
+    course_markup_percentage,
+    course_revenue,
+    course_priority,
+    course_poupularity,
+    created_at,
+    updated_at,
+  ];
+
+  const response = await mysql.execute(insertQuery, values);
+  return response;
+};
