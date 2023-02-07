@@ -14,8 +14,18 @@ const userSchema = Joi.object({
     .pattern(/^[0-9]+$/),
   otp: Joi.string().length(4),
   session_token: Joi.string().guid(),
-  mentor: Joi.string().length(1),
-  // source: Joi.string().length(300),
-}).or("email", "phone");
+  mentor: Joi.number().min(0).max(1),
+  source: Joi.alternatives()
+    .try(
+      Joi.string().email({
+        minDomainSegments: 2,
+        tlds: { allow: ["com", "in", "ai", "org", "co"] },
+      }),
+      Joi.string()
+        .length(10)
+        .pattern(/^[0-9]+$/)
+    )
+    .error(new Error("Invalid email or phone number")),
+});
 
 module.exports = userSchema;
