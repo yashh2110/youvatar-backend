@@ -60,14 +60,14 @@ module.exports.createCourse = async ({
   course_priority,
   course_poupularity,
   created_at,
-  updated_at,
+  updated_at
   )
   VALUES (
-    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
   );
 `;
 
-  const values = [
+  const response = await mysql.execute(insertQuery, [
     course_admin,
     course_name,
     course_category,
@@ -96,8 +96,6 @@ module.exports.createCourse = async ({
     course_poupularity,
     created_at,
     updated_at,
-  ];
-
-  const response = await mysql.execute(insertQuery, values);
+  ]);
   return response;
 };
