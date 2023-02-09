@@ -33,6 +33,9 @@ module.exports.createAccountService = async (req, res, next) => {
     }
     next();
   } catch (err) {
+    console.log(err);
+    if (err.code === "ER_DUP_ENTRY")
+      return res.status(400).json({ error: "User already registered" });
     return res.status(400).json({
       error: err.sqlMessage || err.message || "Something went wrong",
     });
@@ -84,7 +87,7 @@ module.exports.verifyOtpService = async (req, res, next) => {
       if (time < data[0].expired_at) return next();
       return res.status(401).json({ error: "OTP expired" });
     }
-    return next();
+    return res.status(401).json({ error: "Incorrect OTP" });
   } catch (err) {
     return res
       .status(400)
@@ -121,7 +124,8 @@ module.exports.completeUserProfileService = async (req, res) => {
     await setUserDetailsQuery({ user_id, user_data });
     return res.status(200).json({ msg: "Account created successfully" });
   } catch (err) {
-    console.log(err);
+    if (err.code === "ER_DUP_ENTRY")
+      return res.status(400).json({ error: "Username already exist" });
     return res
       .status(400)
       .json({ error: err.sqlMessage || "Something went wrong" });
