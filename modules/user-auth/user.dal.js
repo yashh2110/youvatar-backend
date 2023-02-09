@@ -12,6 +12,7 @@ module.exports.createAccountByEmailQuery = async ({ email }) => {
     "select count(*) as count from users where user_email = ? and user_auth= ?",
     [email, 0]
   );
+  console.log(rows, fields);
   if (rows[0].count > 0) return { res: "existing" };
   const current_time = getTimeInMills();
   const res = await mysql.execute(
