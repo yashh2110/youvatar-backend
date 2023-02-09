@@ -25,6 +25,12 @@ module.exports.validateUserSchema = async (req, res, next) => {
     await userSchema.validateAsync(body);
     next();
   } catch (err) {
+    if (err.message) {
+      const msg = err.message.replace(/"/g, "");
+      return res.status(400).json({
+        error: msg,
+      });
+    }
     return res.status(400).json({
       error:
         err.error?.details?.message || err.message || "Something went wrong",
