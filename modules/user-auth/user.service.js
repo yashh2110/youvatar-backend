@@ -20,10 +20,13 @@ module.exports.createAccountService = async (req, res, next) => {
   const { email, phone } = req.body;
   try {
     if (email) {
-      const data = await createAccountByEmailQuery({ email: email });
+      console.log(email);
+
+      const data = await createAccountByEmailQuery({ email });
       if (data?.res === "existing") return next();
     } else if (phone) {
       const data = await createAccountByPhoneQuery({ phone });
+      console.log(data);
       if (data?.res === "existing") return next();
     } else {
       return res.status(400).json({ error: "Check the request body" });
