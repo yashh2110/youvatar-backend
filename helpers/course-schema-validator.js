@@ -4,7 +4,7 @@ const courseSchema = Joi.object({
   course_admin: Joi.number().integer().required(),
   course_name: Joi.string().max(300).required(),
   course_category: Joi.number().integer().required(),
-  university: Joi.number().integer().required(),
+  school_id: Joi.number().integer().required(),
   description: Joi.string().max(600).required(),
   no_of_batches: Joi.number().required(),
   timings: Joi.string().max(300).required(),
@@ -25,10 +25,8 @@ const courseSchema = Joi.object({
   course_active: Joi.number().valid(0, 1),
   course_auth: Joi.number().valid(0, 1),
   course_teaching_type: Joi.string().max(10).required(),
-  course_start_date: Joi.date().required(),
-  course_end_date: Joi.date().required(),
-  created_at: Joi.string().max(25).required(),
-  updated_at: Joi.string().max(25).required(),
+  course_start_date: Joi.string().max(25).required(),
+  course_end_date: Joi.string().max(25).required(),
 });
 
 module.exports = courseSchema;

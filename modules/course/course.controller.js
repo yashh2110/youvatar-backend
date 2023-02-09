@@ -1,10 +1,10 @@
 const express = require("express");
-const { validateCourseSchema } = require("../../middleware/course-validation");
-const courseService = require("./course.services");
+const { validateCourse } = require("../../middleware");
+const courseService = require("./course.service");
 const courseRoutes = express.Router();
 
 courseRoutes
   .route("/create_course")
-  .post(validateCourseSchema, courseService.createCourseService);
+  .post(validateCourse, courseService.createCourseService);
 
 module.exports = courseRoutes;

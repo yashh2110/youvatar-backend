@@ -1,4 +1,4 @@
-const { createCourseService } = require("./course.services");
+const { createCourseService } = require("./course.service");
 
 const courses = {
   createCourse: createCourseService,

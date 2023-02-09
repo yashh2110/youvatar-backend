@@ -5,7 +5,7 @@ module.exports.createCourse = async ({
   course_admin,
   course_name,
   course_category,
-  university,
+  school_id,
   description,
   no_of_batches,
   timings,
@@ -28,15 +28,13 @@ module.exports.createCourse = async ({
   course_revenue,
   course_priority,
   course_poupularity,
-  created_at,
-  updated_at,
 }) => {
   const insertQuery = `
   INSERT INTO courses (
   course_admin,
   course_name,
   course_category,
-  university,
+  school_id,
   description,
   no_of_batches,
   timings,
@@ -58,12 +56,10 @@ module.exports.createCourse = async ({
   course_markup_percentage,
   course_revenue,
   course_priority,
-  course_poupularity,
-  created_at,
-  updated_at
+  course_poupularity
   )
   VALUES (
-    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+    ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
   );
 `;
 
@@ -71,7 +67,7 @@ module.exports.createCourse = async ({
     course_admin,
     course_name,
     course_category,
-    university,
+    school_id,
     description,
     no_of_batches,
     timings,
@@ -94,8 +90,6 @@ module.exports.createCourse = async ({
     course_revenue,
     course_priority,
     course_poupularity,
-    created_at,
-    updated_at,
   ]);
   return response;
 };

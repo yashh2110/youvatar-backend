@@ -1,4 +1,4 @@
-const { createCourse } = require("./course.database");
+const { createCourse } = require("./course.dal");
 
 module.exports.createCourseService = async (req, res, next) => {
   try {
@@ -6,7 +6,7 @@ module.exports.createCourseService = async (req, res, next) => {
       course_admin,
       course_name,
       course_category,
-      university,
+      school_id,
       description,
       no_of_batches,
       timings,
@@ -29,14 +29,12 @@ module.exports.createCourseService = async (req, res, next) => {
       course_revenue,
       course_priority,
       course_poupularity,
-      created_at,
-      updated_at,
     } = req.body;
     await createCourse({
       course_admin,
       course_name,
       course_category,
-      university,
+      school_id,
       description,
       no_of_batches,
       timings,
@@ -59,8 +57,6 @@ module.exports.createCourseService = async (req, res, next) => {
       course_revenue,
       course_priority,
       course_poupularity,
-      created_at,
-      updated_at,
     });
 
     res.status(201).json({ message: "Course created successfully" });
