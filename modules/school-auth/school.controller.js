@@ -1,12 +1,12 @@
 const express = require("express");
-const mentor = require(".");
+const school = require(".");
 const middleware = require("../../middleware");
-const mentorRoute = express.Router();
+const schoolRoute = express.Router();
 
-mentorRoute.post(
+schoolRoute.post(
   "/create_school",
   middleware.validateSchool,
-  mentor.createAccount
+  school.createAccount
 );
 
-module.exports = mentorRoute;
+module.exports = schoolRoute;

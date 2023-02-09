@@ -1,4 +1,4 @@
-const { createSchoolQuery } = require("./mentor.dal");
+const { createSchoolQuery } = require("./school.dal");
 
 module.exports.createSchoolService = async (req, res) => {
   let body = req.body;
