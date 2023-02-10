@@ -10,6 +10,7 @@ const {
   setOtpByPhoneQuery,
   verifyOtpByEmailQuery,
   verifyOtpByPhoneQuery,
+  checkUsernameAvailability,
 } = require("./user.dal");
 
 module.exports.createAccountService = async (req, res, next) => {
@@ -76,6 +77,19 @@ module.exports.verifyOtpService = async (req, res, next) => {
     return next();
   } catch (err) {
     console.log(err);
+  }
+};
+
+// CHECK USERNAME
+
+module.exports.checkUserNameService = async (req, res, next) => {
+  const { user_name } = req.body;
+
+  try {
+    const response = await checkUsernameAvailability(user_name);
+    res.status(200).json({ message: response });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 

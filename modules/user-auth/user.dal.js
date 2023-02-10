@@ -53,3 +53,21 @@ module.exports.verifyOtpByPhoneQuery = async ({ phone }) => {
 };
 
 // module.exports = async({ session_token });
+
+// FIND USERNAME
+
+module.exports.checkUsernameAvailability = async (userName) => {
+  try {
+    const [rows] = await mysql.execute(
+      `SELECT * FROM users WHERE user_name = '${userName}'`
+    );
+
+    if (rows.length > 0) {
+      return `Username is not available.`;
+    } else {
+      return `Username is available.`;
+    }
+  } catch (error) {
+    throw error;
+  }
+};
