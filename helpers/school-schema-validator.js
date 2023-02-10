@@ -1,28 +1,30 @@
 const Joi = require("joi");
 
+// need to update validation based on requirements.
 const schoolSchema = Joi.object({
-  school_name: Joi.string().min(3).max(30),
-  niche: Joi.string().min(3).max(30),
-  bank_name: Joi.string().min(3).max(30),
-  // add a correct bank account no validator
-  bank_account_no: Joi.string().min(3).max(30),
-  bank_ifsc_code: Joi.string().min(3).max(30),
-
-  // username: Joi.string().min(3).max(30),
-  // name: Joi.string().min(3).max(35),
-  // password: Joi.string().pattern(new RegExp("^[a-zA-Z0-9]{3,30}$")).min(6),
-  // dob: Joi.number().integer(),
-  // email: Joi.string().email({
-  //   minDomainSegments: 2,
-  //   tlds: { allow: ["com", "in", "ai", "org", "co"] },
-  // }),
-  // phone: Joi.string()
-  //   .length(10)
-  //   .pattern(/^[0-9]+$/),
-  // otp: Joi.string().length(4),
-  // session_token: Joi.string().guid(),
-  // mentor: Joi.string().length(1),
-  // source: Joi.string().length(300),
-}).or("email", "phone");
+  mentor_id: Joi.string().guid().required(),
+  school_name: Joi.string().min(3).max(30).required(),
+  school_motive: Joi.string().min(3).max(30).required(),
+  school_niche: Joi.string().min(3).max(30).required(),
+  mentor_description: Joi.string().min(3).max(200).required(),
+  school_language: Joi.string().min(3).max(30).required(),
+  school_mentor_role: Joi.string().min(3).max(30).required(),
+  is_teaching_online: Joi.boolean().required(),
+  mentor_experience: Joi.string().min(3).max(30).required(),
+  has_teaching_material: Joi.boolean().required(),
+  school_address: Joi.string().min(3).max(200).required(),
+  school_bank_name: Joi.string().min(3).max(30).required(),
+  // validation for only indian bank accounts
+  school_bank_account_no: Joi.string()
+    .pattern(new RegExp("^[0-9]{9,18}$"))
+    .min(9)
+    .max(18)
+    .required(),
+  school_bank_ifsc_code: Joi.string()
+    .pattern(new RegExp("^[A-Z]{4}0[A-Z0-9]{6}$"))
+    .length(11)
+    .required(),
+  school_review_file: Joi.string().length(300).required(),
+});
 
 module.exports = schoolSchema;
