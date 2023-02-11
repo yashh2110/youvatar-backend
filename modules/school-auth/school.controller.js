@@ -6,7 +6,7 @@ const schoolRoute = express.Router();
 schoolRoute.post(
   "/create_school",
   middleware.validateSchool,
-  school.createAccount
+  school.createSchool
 );
 
 module.exports = schoolRoute;
