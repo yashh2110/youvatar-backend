@@ -102,12 +102,12 @@ module.exports.createUserSessionService = async (req, res, next) => {
   const session_token = getUuid();
   const src = phone || email || source;
   try {
-    await createUserSessionQuery({ session_token, src });
+    const { user_id } = await createUserSessionQuery({ session_token, src });
     res.cookie("session_token", session_token, {
       maxAge: 900000,
       httpOnly: true,
     });
-    return res.status(200).json({ msg: `Verification is a success` });
+    return res.status(200).json({ msg: `Verification is a success`, user_id });
   } catch (err) {
     console.log(err);
     return res

@@ -89,7 +89,7 @@ module.exports.createUserSessionQuery = async ({ session_token, src }) => {
     `insert into user_sessions (session_token,user_id,created_at,expired_at) values (?,?,?,?)`,
     [session_token, user_id, time, expired_at]
   );
-  return data;
+  return { data, user_id };
 };
 
 module.exports.setUserDetailsQuery = async ({ user_data, user_id }) => {
