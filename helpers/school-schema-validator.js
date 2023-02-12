@@ -25,7 +25,11 @@ const schoolSchema = Joi.object({
     .pattern(new RegExp("^[A-Z]{4}0[A-Z0-9]{6}$"))
     .length(11)
     .required(),
-  school_review_file: Joi.string().max(300).required(),
+  school_video: Joi.string().max(300).required(),
+  school_pan: Joi.string()
+    .pattern(new RegExp("[A-Z]{5}[0-9]{4}[A-Z]{1}"))
+    .length(10)
+    .required(),
 });
 
 module.exports = schoolSchema;
