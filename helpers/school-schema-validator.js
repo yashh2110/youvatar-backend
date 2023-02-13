@@ -23,7 +23,8 @@ const schoolSchema = Joi.object({
   school_bank_ifsc_code: Joi.string()
     .pattern(new RegExp("^[A-Z]{4}0[A-Z0-9]{6}$"))
     .length(11),
-  school_review_file: Joi.string().max(300).required(),
+  school_video: Joi.string().max(300),
+  school_pan: Joi.string().max(300),
 });
 
 module.exports = schoolSchema;

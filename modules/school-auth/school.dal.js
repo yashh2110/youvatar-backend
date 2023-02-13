@@ -18,14 +18,16 @@ module.exports.createSchoolQuery = async ({
   // school_bank_name,
   // school_bank_account_number,
   // school_bank_ifsc_code,
-  school_review_file,
+  school_video,
+  school_pan,
 }) => {
   const timeInMills = getTimeInMills();
   console.log("Trying to update school table.");
   // school_bank_name, school_bank_account_number, school_bank_ifsc_code
   // adding school into schools table.
   const insert_school = await mysql.execute(
-    `insert into schools (mentor_id, school_name, school_motive, school_niche, school_review_file, school_is_active, created_at, updated_at, school_language, has_teaching_material, school_address, school_mentor_role, is_teaching_online) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+    `insert into schools (mentor_id, school_name, school_motive, school_niche, school_is_active, created_at, updated_at, school_language, has_teaching_material, school_address, school_mentor_role, is_teaching_online, school_video,
+      school_pan) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
     [
       mentor_id,
       school_name,
@@ -34,7 +36,6 @@ module.exports.createSchoolQuery = async ({
       // school_bank_name,
       // school_bank_account_number,
       // school_bank_ifsc_code,
-      school_review_file,
       1,
       timeInMills,
       timeInMills,
@@ -43,9 +44,11 @@ module.exports.createSchoolQuery = async ({
       school_address,
       school_mentor_role,
       is_teaching_online,
+      school_video,
+      school_pan,
     ]
   );
-  console.log("Updated school table.");
+
   // adding mentor into mentors table.
   const insert_mentor = await mysql.execute(
     `insert into mentors (mentor_id, mentor_description, mentor_experience) values (?, ?, ?)`,
