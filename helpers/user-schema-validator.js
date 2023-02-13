@@ -26,6 +26,10 @@ const userSchema = Joi.object({
         .pattern(/^[0-9]+$/)
     )
     .error(new Error("Invalid email or phone number")),
+  user_img: Joi.string().pattern(
+    /[-a-zA-Z0-9@:%._\+~#=]{1,256}\.[a-zA-Z0-9()]{1,6}\b([-a-zA-Z0-9()@:%_\+.~#?&//=]*)/
+  ),
+  user_color: Joi.string().pattern(/^#([A-Fa-f0-9]{6}|[A-Fa-f0-9]{3})$/),
 });
 
 module.exports = userSchema;

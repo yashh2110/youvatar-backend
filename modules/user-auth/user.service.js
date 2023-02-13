@@ -14,6 +14,7 @@ const {
   createUserSessionQuery,
   setUserDetailsQuery,
   loginQuery,
+  setProfileImgQuery,
 } = require("./user.dal");
 
 module.exports.createAccountService = async (req, res, next) => {
@@ -123,6 +124,21 @@ module.exports.completeUserProfileService = async (req, res) => {
   try {
     await setUserDetailsQuery({ user_id, user_data });
     return res.status(200).json({ msg: "Account created successfully" });
+  } catch (err) {
+    if (err.code === "ER_DUP_ENTRY")
+      return res.status(400).json({ error: "Username already exist" });
+    return res
+      .status(400)
+      .json({ error: err.sqlMessage || "Something went wrong" });
+  }
+};
+
+module.exports.uploadProfileService = async (req, res, next) => {
+  const user_id = req.query.user_id;
+  const { user_img, user_color } = req.body;
+  try {
+    await setProfileImgQuery({ user_id, user_img, user_color });
+    return res.status(200).json({ msg: "ProPic Added successfully" });
   } catch (err) {
     if (err.code === "ER_DUP_ENTRY")
       return res.status(400).json({ error: "Username already exist" });

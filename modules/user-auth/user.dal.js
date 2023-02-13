@@ -102,6 +102,24 @@ module.exports.setUserDetailsQuery = async ({ user_data, user_id }) => {
   return data;
 };
 
+module.exports.setProfileImgQuery = async ({
+  user_img,
+  user_color,
+  user_id,
+}) => {
+  let url;
+  let binds;
+  if (user_img) {
+    url = `update users set user_img=?, user_profile_color=? where user_id=?`;
+    binds = [user_img, user_color, user_id];
+  } else {
+    url = `update users set user_profile_color=? where user_id=?`;
+    binds = [user_color, user_id];
+  }
+  const [data, _] = await mysql.execute(url, binds);
+  return data;
+};
+
 // login
 module.exports.loginQuery = async ({ source, password }) => {
   console.log(source);

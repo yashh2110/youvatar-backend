@@ -5,6 +5,7 @@ const {
   createUserSessionService,
   completeUserProfileService,
   loginService,
+  uploadProfileService,
 } = require("./user.service");
 
 const user = {
@@ -14,6 +15,7 @@ const user = {
   createSession: createUserSessionService,
   completeProfile: completeUserProfileService,
   login: loginService,
+  uploadProfile: uploadProfileService,
 };
 
 module.exports = user;
