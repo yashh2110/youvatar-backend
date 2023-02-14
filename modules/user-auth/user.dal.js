@@ -59,7 +59,7 @@ module.exports.verifyOtpByPhoneQuery = async ({ phone }) => {
 module.exports.checkUsernameAvailability = async (userName) => {
   try {
     const [rows] = await mysql.execute(
-      `SELECT * FROM users WHERE user_name = '${userName}'`
+      `SELECT * FROM users WHERE user_name LIKE '%${userName}%'`
     );
 
     if (rows.length > 0) {
