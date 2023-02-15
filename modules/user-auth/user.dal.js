@@ -120,6 +120,14 @@ module.exports.setProfileImgQuery = async ({
   return data;
 };
 
+module.exports.checkUsernameQuery = async ({ user_name }) => {
+  const [rows, _] = await mysql.execute(
+    `SELECT * FROM users WHERE user_name=?`,
+    [user_name]
+  );
+  return rows;
+};
+
 // login
 module.exports.loginQuery = async ({ source, password }) => {
   console.log(source);

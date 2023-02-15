@@ -15,6 +15,7 @@ const {
   setUserDetailsQuery,
   loginQuery,
   setProfileImgQuery,
+  checkUsernameQuery,
 } = require("./user.dal");
 
 module.exports.createAccountService = async (req, res, next) => {
@@ -37,7 +38,7 @@ module.exports.createAccountService = async (req, res, next) => {
     console.log(err);
     if (err.code === "ER_DUP_ENTRY")
       return res.status(400).json({ error: "User already registered" });
-    return res.status(400).json({
+    return res.status(500).json({
       error: err.sqlMessage || err.message || "Something went wrong",
     });
   }
@@ -62,7 +63,7 @@ module.exports.sendOtpService = async (req, res) => {
     return res.status(200).json({ msg: `OTP sent successfully to ${source}` });
   } catch (err) {
     return res
-      .status(400)
+      .status(500)
       .json({ error: err.sqlMessage || err.message || "Something went wrong" });
   }
 };
@@ -91,7 +92,7 @@ module.exports.verifyOtpService = async (req, res, next) => {
     return res.status(401).json({ error: "Incorrect OTP" });
   } catch (err) {
     return res
-      .status(400)
+      .status(500)
       .json({ error: err.sqlMessage || "Something went wrong" });
   }
 };
@@ -112,7 +113,7 @@ module.exports.createUserSessionService = async (req, res, next) => {
   } catch (err) {
     console.log(err);
     return res
-      .status(400)
+      .status(500)
       .json({ error: err.sqlMessage || "Something went wrong" });
   }
 };
@@ -123,12 +124,14 @@ module.exports.completeUserProfileService = async (req, res) => {
   const user_data = req.body;
   try {
     await setUserDetailsQuery({ user_id, user_data });
-    return res.status(200).json({ msg: "Account created successfully" });
+    return res
+      .status(200)
+      .json({ msg: "Account created successfully", user_id });
   } catch (err) {
     if (err.code === "ER_DUP_ENTRY")
       return res.status(400).json({ error: "Username already exist" });
     return res
-      .status(400)
+      .status(500)
       .json({ error: err.sqlMessage || "Something went wrong" });
   }
 };
@@ -143,8 +146,19 @@ module.exports.uploadProfileService = async (req, res, next) => {
     if (err.code === "ER_DUP_ENTRY")
       return res.status(400).json({ error: "Username already exist" });
     return res
-      .status(400)
+      .status(500)
       .json({ error: err.sqlMessage || "Something went wrong" });
+  }
+};
+
+module.exports.checkUserNameService = async (req, res, next) => {
+  const { user_name } = req.query;
+  try {
+    const data = await checkUsernameQuery({ user_name });
+    if (data?.length > 0) return res.status(200).json({ available: 0 });
+    return res.status(200).json({ available: 1 });
+  } catch (error) {
+    return res.status(500).json({ error: error.message });
   }
 };
 
