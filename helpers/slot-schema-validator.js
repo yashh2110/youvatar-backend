@@ -1,7 +1,6 @@
 const Joi = require("joi");
 
 const slotSchema = Joi.object({
-  date: Joi.date().iso().required(),
   start_time: Joi.string()
     .pattern(new RegExp("\\b((1[0-2]|0?[1-9]):([0-5][0-9]) ([AaPp][Mm]))"))
     .required(),

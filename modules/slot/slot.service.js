@@ -1,6 +1,20 @@
 const { createSlotQuery } = require("./slot.dal");
 const { bookSlotQuery } = require("./slot.dal");
 const { getSlotQuery } = require("./slot.dal");
+const { generateFixedSlotQuery } = require("./slot.dal");
+
+module.exports.generateFixedSlotService = async (req, res) => {
+  let body = req.body;
+  try {
+    await generateFixedSlotQuery({ ...body });
+    return res.status(200).json({ msg: "Fixed slot generated successfully" });
+  } catch (err) {
+    console.log(err);
+    return res
+      .status(400)
+      .json({ error: err.sqlMessage || "Something went wrong" });
+  }
+};
 
 module.exports.createSlotService = async (req, res) => {
   let body = req.body;
