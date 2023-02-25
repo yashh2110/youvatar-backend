@@ -30,29 +30,31 @@ module.exports.createSlotService = async (req, res) => {
 };
 
 module.exports.bookSlotService = async (req, res) => {
-  let body = req.body;
+  let { mentor_id, review_id } = req.body;
+  console.log(mentor_id, review_id);
   try {
-    await bookSlotQuery({ ...body });
+    await bookSlotQuery({ mentor_id, review_id });
     return res.status(200).json({ msg: "Slot booked successfully" });
   } catch (err) {
     console.log(err);
     return res
       .status(400)
-      .json({ error: err.sqlMessage || "Something went wrong" });
+      .json({ error: err.sqlMessage || err.message || "Something went wrong" });
   }
 };
 
 module.exports.getSlotService = async (req, res) => {
-  let body = req.body;
+  let { date } = req.params;
   try {
-    const data = await getSlotQuery({ ...body });
+    console.log(date);
+    const data = await getSlotQuery({ date });
     return res
       .status(200)
-      .json({ msg: "Retrieved slots successfully", data: data[0] });
+      .json({ msg: "Retrieved slots successfully", slots: data[0] });
   } catch (err) {
     console.log(err);
     return res
       .status(400)
-      .json({ error: err.sqlMessage || "Something went wrong" });
+      .json({ error: err.sqlMessage || err.message || "Something went wrong" });
   }
 };
