@@ -89,7 +89,7 @@ module.exports.createUserSessionQuery = async ({ session_token, src }) => {
     `insert into user_sessions (session_token,user_id,created_at,expired_at) values (?,?,?,?)`,
     [session_token, user_id, time, expired_at]
   );
-  return data;
+  return { data, user_id };
 };
 
 module.exports.setUserDetailsQuery = async ({ user_data, user_id }) => {
@@ -100,6 +100,32 @@ module.exports.setUserDetailsQuery = async ({ user_data, user_id }) => {
     [username, name, password, dob, mentor, 1, 1, user_id]
   );
   return data;
+};
+
+module.exports.setProfileImgQuery = async ({
+  user_img,
+  user_color,
+  user_id,
+}) => {
+  let url;
+  let binds;
+  if (user_img) {
+    url = `update users set user_img=?, user_profile_color=? where user_id=?`;
+    binds = [user_img, user_color, user_id];
+  } else {
+    url = `update users set user_profile_color=? where user_id=?`;
+    binds = [user_color, user_id];
+  }
+  const [data, _] = await mysql.execute(url, binds);
+  return data;
+};
+
+module.exports.checkUsernameQuery = async ({ user_name }) => {
+  const [rows, _] = await mysql.execute(
+    `SELECT * FROM users WHERE user_name=?`,
+    [user_name]
+  );
+  return rows;
 };
 
 // login

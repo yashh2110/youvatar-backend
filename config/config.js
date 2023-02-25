@@ -27,6 +27,11 @@ if (process.env.NODE_ENV === "development") {
   5;
   redis_port = process.env.REDIS_DEV_PORT;
 
+  aws_s3_bucket_name = process.env.AWS_S3_BUCKET_NAME;
+  aws_s3_bucket_region = process.env.AWS_S3_REGION;
+  aws_s3_access_key = process.env.AWS_S3_ACCESS_KEY;
+  aws_s3_secret_access_key = process.env.AWS_S3_SECRET_ACCESS_KEY;
+
   port = process.env.DEV_PORT;
 }
 if (process.env.NODE_ENV === "production") {
@@ -53,6 +58,11 @@ module.exports = {
   redis_url,
   redis_password,
   redis_port,
+
+  aws_s3_bucket_name,
+  aws_s3_bucket_region,
+  aws_s3_access_key,
+  aws_s3_secret_access_key,
 
   port,
 };

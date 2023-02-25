@@ -5,7 +5,7 @@ const {
   mysql_database,
   mysql_password,
 } = require("./config");
-
+// require("dotenv").config();
 const mysqlConn = mysql.createPool({
   host: mysql_url,
   user: mysql_username,
